@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Stream</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        .movies-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            padding: 10px;
+        }
+        .movie-card {
+            background-color: #222;
+            border-radius: 10px;
+            overflow: hidden;
+            padding: 10px;
+        }
+        .movie-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+        .movie-title {
+            margin: 10px 0;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .watch-btn {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        function redirectToThendel() {
+            window.location.href = "thendel.html";
+        }
+        function redirectToPattudala() {
+            window.location.href = "pattudala.html";
+        }
+        function redirectToGameChanger() {
+            window.location.href = "gamechanger.html";
+        }
+        function redirectToDakuMaharaaj() {
+            window.location.href = "daku-maaharaj.html";
+        }
+        function redirectToMufasa() {
+            window.location.href = "mufasa2.html";
+        }
+        function redirectToDark() {
+            window.location.href = "dark.html";
+        }
+        function redirectToMadha() {
+            window.location.href = "madhagajaraja.html";
+        }
+        function redirectToPushpa() {
+            window.location.href = "pushpa2.0.html";
+        }
+        function redirectTolucky() {
+            window.location.href = "luckybhaskar.html";
+        }
+        function redirectToSalaar() {
+            window.location.href = "salaar.html";
+        }
+    </script>
+</head>
+<body>
+    <h1>Movie Stream</h1>
+    <div class="movies-container">
+        <div class="movie-card">
+            <img src="https://www.5movierulz.soy/uploads/Thandel-Telugu.jpg" alt="Thendel">
+            <div class="movie-title">Thendel</div>
+            <button class="watch-btn" onclick="redirectToThendel()">Watch Now</button>
+        </div>
+        <div class="movie-card">
+            <img src="https://www.5movierulz.soy/uploads/Pattudala-Telugu.jpg" alt="Pattudala">
+            <div class="movie-title">Pattudala</div>
+            <button class="watch-btn" onclick="redirectToPattudala()">Watch Now</button>
+        </div>
+        <div class="movie-card">
+            <img src="https://www.5movierulz.soy/uploads/Game-Changer-Telugu.jpg" alt="Game Changer">
+            <div class="movie-title">Game Changer</div>
+            <button class="watch-btn" onclick="redirectToGameChanger()">Watch Now</button>
+        </div>
+        <div class="movie-card">
+            <img src="https://www.5movierulz.soy/uploads/Daaku-Maharaaj-Telugu.jpg" alt="Daku Maharaaj">
+            <div class="movie-title">Daku Maharaaj</div>
+            <button class="watch-btn" onclick="redirectToDakuMaharaaj()">Watch Now</button>
+        </div>
+        <div class="movie-card">
+            <img src="https://www.5movierulz.soy/uploads/Mufasa-The-Lion-King-Telugu.jpg" alt="Mufasa: The Lion King">
+            <div class="movie-title">Mufasa: The Lion King</div>
+            <button class="watch-btn" onclick="redirectToMufasa()">Watch Now</button>
+        </div>
+        <div class="movie-card">
+            <img src="https://www.5movierulz.soy/uploads/Dark-Telugu.jpg" alt="Dark">
+            <div class="movie-title">Dark</div>
+            <button class="watch-btn" onclick="redirectToDark()">Watch Now</button>
+        </div>
+        <div class="movie-card">
+            <img src="https://www.5movierulz.soy/uploads/Madha-Gaja-Raja-Telugu.jpg" alt="Madha Gaja Raja">
+            <div class="movie-title">Madha Gaja Raja</div>
+            <button class="watch-btn" onclick="redirectToMadha()">Watch Now</button>
+        </div>
+        <div class="movie-card">
+            <img src="https://www.5movierulz.soy/uploads/Pushpa-2-The-Rule-Reloaded-Telugu.jpg" alt="Pushpa 2: The Rule Reloaded">
+            <div class="movie-title">Pushpa 2: The Rule Reloaded</div>
+            <button class="watch-btn" onclick="redirectToPushpa()">Watch Now</button>
+        </div>
+        <div class="movie-card">
+            <img src="https://www.5movierulz.soy/uploads/Lucky-Baskhar-Telugu.jpg" alt="luckybhaskar">
+            <div class="movie-title">Lucky Bhaska₹</div>
+            <button class="watch-btn" onclick="redirectTolucky()">Watch Now</button>
+        </div>
+        <div class="movie-card">
+            <img src="https://www.5movierulz.soy/uploads/Salaar-Cease-Fire-Part-1-Telugu.jpg" alt="Salaar: Part 1 - Ceasefire">
+            <div class="movie-title">Salaar: Part 1 - Ceasefire</div>
+            <button class="watch-btn" onclick="redirectToSalaar()">Watch Now</button>
+        </div>
+    </div>
+</body>
+</html>
