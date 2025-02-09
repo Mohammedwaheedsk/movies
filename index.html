@@ -4,95 +4,96 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie Stream</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            background-color: black;
+            background-color: #090909;
             color: white;
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
             text-align: center;
             padding: 20px;
+            overflow: hidden;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .logo {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 100px;
         }
         .movies-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            padding: 10px;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            margin-top: 50px;
         }
         .movie-card {
             background-color: #222;
-            border-radius: 10px;
+            border-radius: 15px;
             overflow: hidden;
-            padding: 10px;
+            padding: 15px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .movie-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 0px 15px rgba(255, 0, 0, 0.7);
         }
         .movie-card img {
             width: 100%;
-            height: auto;
             border-radius: 10px;
         }
         .movie-title {
             margin: 10px 0;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: bold;
         }
         .watch-btn {
             background-color: red;
             color: white;
             border: none;
-            padding: 5px 10px;
+            padding: 8px 12px;
             border-radius: 5px;
             cursor: pointer;
+            transition: background 0.3s;
+        }
+        .watch-btn:hover {
+            background-color: darkred;
         }
     </style>
     <script>
-        function redirectToThendel() {
-            window.location.href = "thendel.html";
+        function redirectTo(url) {
+            window.location.href = url;
         }
-        function redirectToPattudala() {
-            window.location.href = "pattudala.html";
-        }
-        function redirectToGameChanger() {
-            window.location.href = "gamechanger.html";
-        }
-        function redirectToDakuMaharaaj() {
-            window.location.href = "daku-maaharaj.html";
-        }
-        function redirectToMufasa() {
-            window.location.href = "mufasa2.html";
-        }
-        function redirectToDark() {
-            window.location.href = "dark.html";
-        }
-        function redirectToMadha() {
-            window.location.href = "madhagajaraja.html";
-        }
-        function redirectToPushpa() {
-            window.location.href = "pushpa2.0.html";
-        }
-        function redirectTolucky() {
-            window.location.href = "luckybhaskar.html";
-        }
-        function redirectToSalaar() {
-            window.location.href = "salaar.html";
-        }
+        window.onload = function() {
+            const audio = new Audio('');
+            audio.play();
+        };
     </script>
 </head>
 <body>
+    <img src="F:\web\movies/logo.png" alt="Logo" class="logo">
     <h1>Movie Stream</h1>
     <div class="movies-container">
-        <div class="movie-card">
+        <div class="movie-card" onclick="redirectTo('thendel.html')">
             <img src="https://www.5movierulz.soy/uploads/Thandel-Telugu.jpg" alt="Thendel">
             <div class="movie-title">Thendel</div>
-            <button class="watch-btn" onclick="redirectToThendel()">Watch Now</button>
+            <button class="watch-btn">Watch Now</button>
         </div>
-        <div class="movie-card">
+        <div class="movie-card" onclick="redirectTo('pattudala.html')">
             <img src="https://www.5movierulz.soy/uploads/Pattudala-Telugu.jpg" alt="Pattudala">
             <div class="movie-title">Pattudala</div>
-            <button class="watch-btn" onclick="redirectToPattudala()">Watch Now</button>
+            <button class="watch-btn">Watch Now</button>
         </div>
-        <div class="movie-card">
+        <div class="movie-card" onclick="redirectTo('gamechanger.html')">
             <img src="https://www.5movierulz.soy/uploads/Game-Changer-Telugu.jpg" alt="Game Changer">
             <div class="movie-title">Game Changer</div>
-            <button class="watch-btn" onclick="redirectToGameChanger()">Watch Now</button>
+            <button class="watch-btn">Watch Now</button>
         </div>
         <div class="movie-card">
             <img src="https://www.5movierulz.soy/uploads/Daaku-Maharaaj-Telugu.jpg" alt="Daku Maharaaj">
