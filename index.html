@@ -89,9 +89,9 @@
     </style>
 </head>
 <body>
-    <audio autoplay loop>
-        <source src="Pressure.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
+    <audio id="backgroundMusic" autoplay loop>
+        <source src="./Pressure.mp3" type="audio/mpeg">
+        Your browser does not support the audio element. Please ensure the audio file is available and try again.
     </audio>
 
     <div id="overlay">
@@ -117,24 +117,35 @@
             "Have you ever lied to your best friend?",
             "What's a secret you have never told anyone?",
             "Who was your first crush?",
-            "What’s the most embarrassing thing you've done?",
-            "Who is your present crush?",
-            "Have you ever ______ ?",
-
+            "What’s the most embarrassing thing you've done?"
         ];
 
-       const dares = [
-            "Disturb the recent dialled friend",
-            "Sing a song loudly and embrassingly.",
+        const dares = [
+            "Do 10 jumping jacks.",
+            "Sing a song loudly.",
             "Dance without music for 30 seconds.",
             "Act like a monkey for 1 minute.",
-            "Call a friend and confess you love ice cream passionately.",
-            "Quarrel with class CR",
-            "Stand in the middle of the running class",
-            "Text your enemy!",
-            "Sleep in the class and get caught",
-
+            "Call a friend and confess you love ice cream passionately."
         ];
+
+        // Audio error handling
+        const audio = document.getElementById('backgroundMusic');
+        audio.addEventListener('error', () => {
+            console.error('Failed to load audio file. Ensure "./Pressure.mp3" is in the correct directory or use a valid URL.');
+        });
+
+        // Handle autoplay restrictions
+        audio.muted = true; // Start muted to bypass autoplay restrictions
+        audio.play().then(() => {
+            audio.muted = false; // Unmute after play starts
+        }).catch(err => {
+            console.warn('Autoplay blocked:', err);
+            // Unmute on first user interaction
+            document.addEventListener('click', () => {
+                audio.muted = false;
+                audio.play();
+            }, { once: true });
+        });
 
         window.addEventListener('load', () => {
             setTimeout(() => {
