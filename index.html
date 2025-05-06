@@ -18,7 +18,7 @@
             justify-content: center;
             min-height: 100vh;
             box-sizing: border-box;
-            visibility: hidden; /* Initially hidden until animation completes */
+            visibility: hidden;
             opacity: 0;
             transition: opacity 0.5s ease-in-out;
         }
@@ -49,10 +49,14 @@
             border: none;
             text-align: center;
         }
-        #result, #number, #choice p {
+        #result, #number, #choice p, #timer {
             font-size: 20px;
             margin: 15px 0;
             padding: 0 10px;
+        }
+        #timer {
+            color: #ff4500;
+            font-weight: bold;
         }
         #overlay {
             position: fixed;
@@ -79,6 +83,30 @@
             transform: translateY(100px) rotate(-5deg);
             opacity: 0;
         }
+        #wheel-container {
+            margin: 20px 0;
+            position: relative;
+            display: none;
+        }
+        #wheel {
+            max-width: 300px;
+            width: 100%;
+        }
+        #spin-button {
+            display: none;
+        }
+        #arrow {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 20px solid #ff4500;
+            z-index: 10;
+        }
         @keyframes slideInRotate {
             0% { transform: translateY(100px) rotate(-5deg); opacity: 0; }
             100% { transform: translateY(0) rotate(0deg); opacity: 1; }
@@ -90,7 +118,7 @@
 </head>
 <body>
     <audio id="backgroundMusic" autoplay loop>
-        <source src="Pressure.mp3" type="audio/mpeg">
+        <source src="./Pressure.mp3" type="audio/mpeg">
         Your browser does not support the audio element. Please ensure the audio file is available and try again.
     </audio>
 
@@ -103,6 +131,11 @@
     <input type="number" id="playerCount" min="2" placeholder="Number of players">
     <button onclick="startGame()">Start Game</button>
 
+    <div id="wheel-container">
+        <div id="arrow"></div>
+        <canvas id="wheel" width="300" height="300"></canvas>
+        <button id="spin-button" onclick="spinWheel()">Spin the Wheel</button>
+    </div>
     <div id="number"></div>
     <div id="choice" style="display:none;">
         <p>Choose: Truth or Dare?</p>
@@ -110,6 +143,7 @@
         <button onclick="choose('dare')">Dare</button>
     </div>
     <div id="result"></div>
+    <div id="timer"></div>
 
     <script>
         const truths = [
@@ -128,6 +162,11 @@
             "Call a friend and confess you love ice cream passionately."
         ];
 
+        let playerCount = 0;
+        let currentPlayer = 0;
+        let isSpinning = false;
+        let timerInterval = null;
+
         // Audio error handling
         const audio = document.getElementById('backgroundMusic');
         audio.addEventListener('error', () => {
@@ -135,12 +174,11 @@
         });
 
         // Handle autoplay restrictions
-        audio.muted = true; // Start muted to bypass autoplay restrictions
+        audio.muted = true;
         audio.play().then(() => {
-            audio.muted = false; // Unmute after play starts
+            audio.muted = false;
         }).catch(err => {
             console.warn('Autoplay blocked:', err);
-            // Unmute on first user interaction
             document.addEventListener('click', () => {
                 audio.muted = false;
                 audio.play();
@@ -150,22 +188,108 @@
         window.addEventListener('load', () => {
             setTimeout(() => {
                 document.body.classList.add('visible');
-            }, 1500); // Matches animation duration (1s + 0.5s fade-out + 0.25s buffer)
+            }, 1500);
         });
 
         function startGame() {
-            const playerCount = document.getElementById('playerCount').value;
-            const num = parseInt(playerCount);
-
-            if (isNaN(num) || num < 2) {
+            playerCount = parseInt(document.getElementById('playerCount').value);
+            if (isNaN(playerCount) || playerCount < 2) {
                 alert('Please enter a valid number of players (at least 2).');
                 return;
             }
+            clearTimer();
+            drawWheel();
+            spinWheel();
+        }
 
-            const randomPlayer = Math.floor(Math.random() * num) + 1;
-            document.getElementById('number').innerText = `Player ${randomPlayer}, it’s your turn!`;
-            document.getElementById('choice').style.display = 'block';
+        function drawWheel() {
+            const canvas = document.getElementById('wheel');
+            const ctx = canvas.getContext('2d');
+            const radius = canvas.width / 2;
+            const anglePerSegment = (2 * Math.PI) / playerCount;
+            const colors = ['#ff4500', '#ffd700', '#1e90ff', '#32cd32', '#ff69b4'];
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < playerCount; i++) {
+                ctx.beginPath();
+                ctx.moveTo(radius, radius);
+                ctx.arc(radius, radius, radius - 10, i * anglePerSegment, (i + 1) * anglePerSegment);
+                ctx.fillStyle = colors[i % colors.length];
+                ctx.fill();
+                ctx.stroke();
+
+                // Add player number
+                ctx.save();
+                ctx.translate(radius, radius);
+                ctx.rotate(i * anglePerSegment + anglePerSegment / 2);
+                ctx.fillStyle = '#fff';
+                ctx.font = 'bold 20px Georgia';
+                ctx.textAlign = 'center';
+                ctx.fillText(`P${i + 1}`, radius / 2, 0);
+                ctx.restore();
+            }
+        }
+
+        function spinWheel() {
+            if (isSpinning) return;
+            isSpinning = true;
+            clearTimer();
+            document.getElementById('wheel-container').style.display = 'block';
+            document.getElementById('choice').style.display = 'none';
             document.getElementById('result').innerText = '';
+            document.getElementById('number').innerText = '';
+
+            const canvas = document.getElementById('wheel');
+            let rotation = 0;
+            const spinTime = 3000;
+            const startTime = Date.now();
+            const randomPlayer = Math.floor(Math.random() * playerCount) + 1;
+            const anglePerSegment = 360 / playerCount;
+            const targetAngle = (randomPlayer - 1) * anglePerSegment + Math.random() * anglePerSegment * 0.8 + anglePerSegment * 0.1;
+            const totalRotation = 360 * 5 + targetAngle;
+
+            function animate() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / spinTime, 1);
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                rotation = easeOut * totalRotation;
+
+                canvas.style.transform = `rotate(${rotation}deg)`;
+
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    isSpinning = false;
+                    currentPlayer = randomPlayer;
+                    document.getElementById('number').innerText = `Player ${currentPlayer}, it’s your turn!`;
+                    document.getElementById('choice').style.display = 'block';
+                    document.getElementById('wheel-container').style.display = 'none';
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        function startTimer() {
+            clearTimer();
+            let timeLeft = 30;
+            document.getElementById('timer').innerText = `Time left: ${timeLeft}s`;
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').innerText = `Time left: ${timeLeft}s`;
+                if (timeLeft <= 0) {
+                    clearTimer();
+                    spinWheel();
+                }
+            }, 1000);
+        }
+
+        function clearTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            document.getElementById('timer').innerText = '';
         }
 
         function choose(option) {
@@ -178,6 +302,7 @@
                 output = `Your Dare: ${dare}`;
             }
             document.getElementById('result').innerText = output;
+            startTimer();
         }
     </script>
 </body>
