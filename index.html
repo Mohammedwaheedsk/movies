@@ -212,16 +212,14 @@
         let isSpinning = false;
         let timerInterval = null;
 
-        // Audio error handling for spin sound
         const spinSound = document.getElementById('spinSound');
         spinSound.addEventListener('error', () => {
-            console.error('Failed to load spin sound effect. Ensure "./arcade-spin.mp3" is in the correct directory or use a valid URL.');
+            console.error('Failed to load spin sound effect.');
         });
 
-        // Audio error handling for celebration sound
         const celebrationSound = document.getElementById('celebrationSound');
         celebrationSound.addEventListener('error', () => {
-            console.error('Failed to load celebration sound effect. Ensure "./celebration.mp3" is in the correct directory or use a valid URL.');
+            console.error('Failed to load celebration sound effect.');
         });
 
         window.addEventListener('load', () => {
@@ -250,17 +248,18 @@
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             for (let i = 0; i < playerCount; i++) {
+                const startAngle = i * anglePerSegment - Math.PI / 2;
+                const endAngle = (i + 1) * anglePerSegment - Math.PI / 2;
                 ctx.beginPath();
                 ctx.moveTo(radius, radius);
-                ctx.arc(radius, radius, radius - 10, i * anglePerSegment, (i + 1) * anglePerSegment);
+                ctx.arc(radius, radius, radius - 10, startAngle, endAngle);
                 ctx.fillStyle = colors[i % colors.length];
                 ctx.fill();
                 ctx.stroke();
 
-                // Add player number
                 ctx.save();
                 ctx.translate(radius, radius);
-                ctx.rotate(i * anglePerSegment + anglePerSegment / 2);
+                ctx.rotate(startAngle + anglePerSegment / 2);
                 ctx.fillStyle = '#fff';
                 ctx.font = 'bold 20px Georgia';
                 ctx.textAlign = 'center';
@@ -275,28 +274,18 @@
             const canvas = document.getElementById('celebration-canvas');
             const ctx = canvas.getContext('2d');
 
-            // Set canvas size
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
 
-            // Show celebration
             celebration.style.display = 'block';
             celebrationText.innerText = `Player ${player} Selected!`;
 
-            // Play celebration sound
             celebrationSound.muted = true;
             celebrationSound.currentTime = 0;
             celebrationSound.play().then(() => {
                 celebrationSound.muted = false;
-            }).catch(err => {
-                console.warn('Celebration sound autoplay blocked:', err);
-                document.addEventListener('click', () => {
-                    celebrationSound.muted = false;
-                    celebrationSound.play();
-                }, { once: true });
-            });
+            }).catch(() => {});
 
-            // Confetti animation
             const particles = [];
             const colors = ['#ff4500', '#ffd700', '#1e90ff', '#32cd32', '#ff69b4'];
             for (let i = 0; i < 100; i++) {
@@ -325,7 +314,7 @@
                 particles.forEach(p => {
                     p.x += p.vx;
                     p.y += p.vy;
-                    p.vy += 0.1; // Gravity
+                    p.vy += 0.1;
                     if (p.y > canvas.height) {
                         p.y = 0;
                         p.x = Math.random() * canvas.width;
@@ -351,18 +340,11 @@
             document.getElementById('result').innerText = '';
             document.getElementById('number').innerText = '';
 
-            // Play spin sound
             spinSound.muted = true;
             spinSound.currentTime = 0;
             spinSound.play().then(() => {
                 spinSound.muted = false;
-            }).catch(err => {
-                console.warn('Spin sound autoplay blocked:', err);
-                document.addEventListener('click', () => {
-                    spinSound.muted = false;
-                    spinSound.play();
-                }, { once: true });
-            });
+            }).catch(() => {});
 
             const canvas = document.getElementById('wheel');
             let rotation = 0;
@@ -370,8 +352,8 @@
             const startTime = Date.now();
             const randomPlayer = Math.floor(Math.random() * playerCount) + 1;
             const anglePerSegment = 360 / playerCount;
-            const targetAngle = (randomPlayer - 1) * anglePerSegment + Math.random() * anglePerSegment * 0.8 + anglePerSegment * 0.1;
-            const totalRotation = 360 * 5 + targetAngle;
+            const targetAngle = (randomPlayer - 1) * anglePerSegment + anglePerSegment / 2;
+            const totalRotation = 360 * 5 + (360 - targetAngle);
 
             function animate() {
                 const elapsed = Date.now() - startTime;
@@ -389,10 +371,8 @@
                     spinSound.currentTime = 0;
                     currentPlayer = randomPlayer;
 
-                    // Trigger celebration for 2 seconds
                     triggerCelebration(currentPlayer);
 
-                    // Delay showing player and choices until celebration ends
                     setTimeout(() => {
                         document.getElementById('number').innerText = `Player ${currentPlayer}, it’s your turn!`;
                         document.getElementById('choice').style.display = 'block';
