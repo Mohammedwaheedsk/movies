@@ -1,2 +1,2 @@
-# movies
-Watch latest releases and web series here
+# Play Truth or Dare game with friends when bored
+
