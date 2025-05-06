@@ -21,6 +21,7 @@
             visibility: hidden;
             opacity: 0;
             transition: opacity 0.5s ease-in-out;
+            position: relative;
         }
         body.visible {
             visibility: visible;
@@ -107,6 +108,37 @@
             border-bottom: 20px solid #ff4500;
             z-index: 10;
         }
+        #celebration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        #celebration-canvas {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        #celebration-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 36px;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 0 0 10px #ff4500, 0 0 20px #ff6347;
+            animation: pulse 0.5s infinite alternate;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+        }
         @keyframes slideInRotate {
             0% { transform: translateY(100px) rotate(-5deg); opacity: 0; }
             100% { transform: translateY(0) rotate(0deg); opacity: 1; }
@@ -114,16 +146,29 @@
         @keyframes fadeOutOverlay {
             to { opacity: 0; visibility: hidden; }
         }
+        @keyframes pulse {
+            from { transform: translate(-50%, -50%) scale(1); }
+            to { transform: translate(-50%, -50%) scale(1.1); }
+        }
     </style>
 </head>
 <body>
-    <audio id="backgroundMusic" autoplay loop>
-        <source src="./Pressure.mp3" type="audio/mpeg">
-        Your browser does not support the audio element. Please ensure the audio file is available and try again.
+    <audio id="spinSound" loop>
+        <source src="./arcade-spin.mp3" type="audio/mpeg">
+        Your browser does not support the audio element. Please ensure the arcade spin audio file is available.
+    </audio>
+    <audio id="celebrationSound">
+        <source src="./celebration.mp3" type="audio/mpeg">
+        Your browser does not support the audio element. Please ensure the celebration audio file is available.
     </audio>
 
     <div id="overlay">
         <div id="overlay-text">TRUTH OR DARE</div>
+    </div>
+
+    <div id="celebration">
+        <canvas id="celebration-canvas"></canvas>
+        <div id="celebration-text"></div>
     </div>
 
     <h1>Truth or Dare Game</h1>
@@ -167,22 +212,16 @@
         let isSpinning = false;
         let timerInterval = null;
 
-        // Audio error handling
-        const audio = document.getElementById('backgroundMusic');
-        audio.addEventListener('error', () => {
-            console.error('Failed to load audio file. Ensure "./Pressure.mp3" is in the correct directory or use a valid URL.');
+        // Audio error handling for spin sound
+        const spinSound = document.getElementById('spinSound');
+        spinSound.addEventListener('error', () => {
+            console.error('Failed to load spin sound effect. Ensure "./arcade-spin.mp3" is in the correct directory or use a valid URL.');
         });
 
-        // Handle autoplay restrictions
-        audio.muted = true;
-        audio.play().then(() => {
-            audio.muted = false;
-        }).catch(err => {
-            console.warn('Autoplay blocked:', err);
-            document.addEventListener('click', () => {
-                audio.muted = false;
-                audio.play();
-            }, { once: true });
+        // Audio error handling for celebration sound
+        const celebrationSound = document.getElementById('celebrationSound');
+        celebrationSound.addEventListener('error', () => {
+            console.error('Failed to load celebration sound effect. Ensure "./celebration.mp3" is in the correct directory or use a valid URL.');
         });
 
         window.addEventListener('load', () => {
@@ -230,6 +269,79 @@
             }
         }
 
+        function triggerCelebration(player) {
+            const celebration = document.getElementById('celebration');
+            const celebrationText = document.getElementById('celebration-text');
+            const canvas = document.getElementById('celebration-canvas');
+            const ctx = canvas.getContext('2d');
+
+            // Set canvas size
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            // Show celebration
+            celebration.style.display = 'block';
+            celebrationText.innerText = `Player ${player} Selected!`;
+
+            // Play celebration sound
+            celebrationSound.muted = true;
+            celebrationSound.currentTime = 0;
+            celebrationSound.play().then(() => {
+                celebrationSound.muted = false;
+            }).catch(err => {
+                console.warn('Celebration sound autoplay blocked:', err);
+                document.addEventListener('click', () => {
+                    celebrationSound.muted = false;
+                    celebrationSound.play();
+                }, { once: true });
+            });
+
+            // Confetti animation
+            const particles = [];
+            const colors = ['#ff4500', '#ffd700', '#1e90ff', '#32cd32', '#ff69b4'];
+            for (let i = 0; i < 100; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 10,
+                    vy: (Math.random() - 0.5) * 10,
+                    radius: Math.random() * 5 + 2,
+                    color: colors[Math.floor(Math.random() * colors.length)]
+                });
+            }
+
+            const startTime = Date.now();
+            function animateConfetti() {
+                const elapsed = Date.now() - startTime;
+                if (elapsed > 2000) {
+                    celebration.style.display = 'none';
+                    celebrationSound.pause();
+                    celebrationSound.currentTime = 0;
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    return;
+                }
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.1; // Gravity
+                    if (p.y > canvas.height) {
+                        p.y = 0;
+                        p.x = Math.random() * canvas.width;
+                        p.vy = (Math.random() - 0.5) * 10;
+                    }
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color;
+                    ctx.fill();
+                });
+
+                requestAnimationFrame(animateConfetti);
+            }
+            requestAnimationFrame(animateConfetti);
+        }
+
         function spinWheel() {
             if (isSpinning) return;
             isSpinning = true;
@@ -238,6 +350,19 @@
             document.getElementById('choice').style.display = 'none';
             document.getElementById('result').innerText = '';
             document.getElementById('number').innerText = '';
+
+            // Play spin sound
+            spinSound.muted = true;
+            spinSound.currentTime = 0;
+            spinSound.play().then(() => {
+                spinSound.muted = false;
+            }).catch(err => {
+                console.warn('Spin sound autoplay blocked:', err);
+                document.addEventListener('click', () => {
+                    spinSound.muted = false;
+                    spinSound.play();
+                }, { once: true });
+            });
 
             const canvas = document.getElementById('wheel');
             let rotation = 0;
@@ -260,10 +385,19 @@
                     requestAnimationFrame(animate);
                 } else {
                     isSpinning = false;
+                    spinSound.pause();
+                    spinSound.currentTime = 0;
                     currentPlayer = randomPlayer;
-                    document.getElementById('number').innerText = `Player ${currentPlayer}, it’s your turn!`;
-                    document.getElementById('choice').style.display = 'block';
-                    document.getElementById('wheel-container').style.display = 'none';
+
+                    // Trigger celebration for 2 seconds
+                    triggerCelebration(currentPlayer);
+
+                    // Delay showing player and choices until celebration ends
+                    setTimeout(() => {
+                        document.getElementById('number').innerText = `Player ${currentPlayer}, it’s your turn!`;
+                        document.getElementById('choice').style.display = 'block';
+                        document.getElementById('wheel-container').style.display = 'none';
+                    }, 2000);
                 }
             }
             requestAnimationFrame(animate);
