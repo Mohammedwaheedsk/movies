@@ -2,238 +2,153 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movie Stream</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Truth or Dare Game</title>
     <style>
-        html, body {
-            background-color: #090909;
-            color: white;
-            font-family: 'Poppins', sans-serif;
+        body {
+            font-family: 'Georgia', serif;
             text-align: center;
             padding: 20px;
-            overflow-y: auto; /* Enable scrolling */
             margin: 0;
-            height: 100%;
+            background: #111;
+            color: #fff;
+            visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            box-sizing: border-box;
         }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-50px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .title {
-            position: relative;
-            top: 30px;
-            left: 0%;
-            background-color: #c41a1a;
-            border-radius: 15px;
-            overflow: hidden;
-            padding: 15px;
-        }
-
-        .logo {
-            position: relative;
-            top: 20px;
-            left: 0%;
-            transform: translateX(-50%);
-            width: 120px;
-            opacity: 0;
-            animation: slideDown 1.5s ease-out forwards;
-        }
-
-        .movies-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 20px;
-            padding: 20px;
-            margin-top: 100px;
-        }
-
-        .movie-card {
-            background-color: #2a2929;
-            border-radius: 15px;
-            overflow: hidden;
-            padding: 15px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .movie-card:hover {
-            transform: scale(1.05);
-            box-shadow: 0px 0px 15px rgba(255, 0, 0, 0.7);
-        }
-
-        .movie-card img {
-            width: 100%;
-            border-radius: 10px;
-        }
-
-        .movie-title {
-            margin: 10px 0;
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        .watch-btn {
-            background-color: red;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 5px;
+        button {
+            padding: 12px 24px;
+            font-size: 18px;
+            margin: 10px;
             cursor: pointer;
-            transition: background 0.3s;
+            border: none;
+            border-radius: 8px;
+            background: #ffd700;
+            color: #111;
+            font-weight: bold;
+            width: 80%;
+            max-width: 300px;
+        }
+        input[type="number"] {
+            padding: 10px;
+            font-size: 18px;
+            width: 80%;
+            max-width: 200px;
+            margin: 10px auto;
+            border-radius: 5px;
+            border: none;
+            text-align: center;
+        }
+        #result, #number, #choice p {
+            font-size: 20px;
+            margin: 15px 0;
+            padding: 0 10px;
         }
 
-        .watch-btn:hover {
-            background-color: darkred;
+        #overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(45deg, #0f0f0f, #1b1b1b, #0f0f0f);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 8vw;
+            font-weight: 700;
+            color: #ffd700;
+            letter-spacing: 2px;
+            animation: fadeOut 2s ease 0.5s forwards, flicker 2s infinite alternate;
+            z-index: 9999;
+            text-shadow: 0 0 10px #ffd700, 0 0 20px #ff4500, 0 0 30px #ff6347;
+            text-align: center;
+            padding: 20px;
+        }
+
+        @keyframes flicker {
+            0% { opacity: 1; text-shadow: 0 0 10px #ffd700, 0 0 20px #ff4500, 0 0 30px #ff6347; }
+            50% { opacity: 0.8; text-shadow: 0 0 15px #ffd700, 0 0 25px #ff4500, 0 0 35px #ff6347; }
+            100% { opacity: 1; text-shadow: 0 0 10px #ffd700, 0 0 20px #ff4500, 0 0 30px #ff6347; }
+        }
+
+        @keyframes fadeOut {
+            to { opacity: 0; visibility: hidden; }
         }
     </style>
-    <script>
-        function redirectTo(url) {
-            window.location.href = url;
-        }
-
-        window.onload = function() {
-            let audio = new Audio('F:\web\movies/intro.mp3'); // sound
-            audio.play().catch(error => console.log("Autoplay prevented:", error));
-        };
-    </script>
 </head>
 <body>
-    <img src="F:\web\movies/logo.png" alt="Logo" class="logo">
-    <h1>Movie Stream</h1>
-    <div class="movies-container">
-        <div class="movie-card" onclick="redirectTo('capame.html')">
-            <img src="https://www.5movierulz.soy/uploads/Captain-America-Brave-New-World-Telugu.jpg" alt="Captain America">
-            <div class="movie-title">Captain America: Brave New World</div>
-            <button class="watch-btn">Watch Now</button>
-        </div>
-        <div class="movie-card" onclick="redirectTo('thendel.html')">
-            <img src="https://www.5movierulz.soy/uploads/Thandel-Telugu.jpg" alt="Thendel">
-            <div class="movie-title">Thendel</div>
-            <button class="watch-btn">Watch Now</button>
-        </div>
-        <div class="movie-card" onclick="redirectTo('pattudala.html')">
-            <img src="https://www.5movierulz.soy/uploads/Pattudala-Telugu.jpg" alt="Pattudala">
-            <div class="movie-title">Pattudala</div>
-            <button class="watch-btn">Watch Now</button>
-        </div>
-        <div class="movie-card" onclick="redirectTo('flightrisk.html')">
-            <img src="https://www.5movierulz.soy/uploads/Flight-Risk-English.jpg" alt="Flight Risk">
-            <div class="movie-title">Flight Risk</div>
-            <button class="watch-btn">Watch Now</button>
-        </div>
-        <div class="movie-card" onclick="redirectTo('myflon.html')">
-            <img src="https://www.5movierulz.soy/uploads/My-Fault-London-Telugu.jpg" alt="myfault">
-            <div class="movie-title">My Fault: London</div>
-            <button class="watch-btn">Watch Now</button>
-        </div>
-        <div class="movie-card" onclick="redirectTo('gamechanger.html')">
-            <img src="https://www.5movierulz.soy/uploads/Game-Changer-Telugu.jpg" alt="Game Changer">
-            <div class="movie-title">Game Changer</div>
-            <button class="watch-btn">Watch Now</button>
-        </div>
-        <div class="movie-card">
-            <img src="https://www.5movierulz.soy/uploads/Daaku-Maharaaj-Telugu.jpg" alt="Daku Maharaaj">
-            <div class="movie-title">Daku Maharaaj</div>
-            <button class="watch-btn" onclick="redirectTo('daku.html')">Watch Now</button>
-        </div>
-        <div class="movie-card">
-            <img src="https://www.5movierulz.soy/uploads/Mufasa-The-Lion-King-Telugu.jpg" alt="Mufasa: The Lion King">
-            <div class="movie-title">Mufasa: The Lion King</div>
-            <button class="watch-btn" onclick="redirectTo('mufasa.html')">Watch Now</button>
-        </div>
-        <div class="movie-card">
-            <img src="https://www.5movierulz.soy/uploads/Subservience-Telugu.jpg" alt="Subservience">
-            <div class="movie-title">Subservience</div>
-            <button class="watch-btn" onclick="redirectTo('subser.html')">Watch Now</button>
-        </div>
-        <div class="movie-card">
-            <img src="https://www.5movierulz.soy/uploads/Dark-Telugu.jpg" alt="Dark">
-            <div class="movie-title">Dark</div>
-            <button class="watch-btn" onclick="redirectTo('dark.html')">Watch Now</button>
-        </div>
-        <div class="movie-card">
-            <img src="https://www.5movierulz.soy/uploads/Madha-Gaja-Raja-Telugu.jpg" alt="Madha Gaja Raja">
-            <div class="movie-title">Madha Gaja Raja</div>
-            <button class="watch-btn" onclick="redirectTo('madha.html')">Watch Now</button>
-        </div>
-        <div class="movie-card">
-            <img src="https://www.5movierulz.soy/uploads/Pushpa-2-The-Rule-Reloaded-Telugu.jpg" alt="Pushpa 2: The Rule Reloaded">
-            <div class="movie-title">Pushpa 2: The Rule Reloaded</div>
-            <button class="watch-btn" onclick="redirectTo('pushpa.html')">Watch Now</button>
-        </div>
-        <div class="movie-card">
-            <img src="https://www.5movierulz.soy/uploads/Lucky-Baskhar-Telugu.jpg" alt="Lucky Bhaskar">
-            <div class="movie-title">Lucky Bhaskar</div>
-            <button class="watch-btn" onclick="redirectTo('lucky.html')">Watch Now</button>
-        </div>
-        <div class="movie-card">
-            <img src="https://www.5movierulz.soy/uploads/Salaar-Cease-Fire-Part-1-Telugu.jpg" alt="Salaar: Part 1 - Ceasefire">
-            <div class="movie-title">Salaar: Part 1 - Ceasefire</div>
-            <button class="watch-btn" onclick="redirectTo('salaar.html')">Watch Now</button>
-        </div>
-        <div class="movie-card">
-            <img src="https://www.5movierulz.soy/uploads/Identity-Telugu.jpg" alt="Identity">
-            <div class="movie-title">Identity</div>
-            <button class="watch-btn" onclick="redirectTo('identity.html')">Watch Now</button>
-        </div>
-        <div class="movie-card">
-            <img src="https://www.5movierulz.soy/uploads/The-Sabarmati-Report-Telugu.jpg" alt="Sabarmati Report">
-            <div class="movie-title">Sabarmati Report</div>
-            <button class="watch-btn" onclick="redirectTo('sabarmati.html')">Watch Now</button>
-        </div>
-        <div class="movie-card">
-            <img src="https://multimovies.life/wp-content/uploads/2023/04/3dOJVDLoLRqzDNgToXFwjCSwqL3-200x300.jpg" alt="Laila Majnu">
-            <div class="movie-title">Laila Majnu</div>
-            <button class="watch-btn" onclick="redirectTo('lailamajnu.html')">Watch Now</button>
-        </div>
-        <div class="movie-card">
-            <img src="https://www.5movierulz.soy/uploads/Vidudala-Part-2-Telugu.jpg" alt="Vidudala Part 2">
-            <div class="movie-title">Vidudala Part 2</div>
-            <button class="watch-btn" onclick="redirectTo('vidu.html')">Watch Now</button>
-        </div>
-        <div class="movie-card">
-            <img src="https://www.5movierulz.soy/uploads/Qalb-Telugu.jpg" alt="qalb">
-            <div class="movie-title">Qalb</div>
-            <button class="watch-btn" onclick="redirectTo('qalb.html')">Watch Now</button>
-        </div>
-        <div class="movie-card">
-            <img src="https://www.5movierulz.soy/uploads/Marco-Telugu.jpg" alt="Marco">
-            <div class="movie-title">Marco</div>
-            <button class="watch-btn" onclick="redirectTo('marco.html')">Watch Now</button>
-        </div>
-        <div class="movie-card">
-            <img src="https://www.5movierulz.soy/uploads/The-Mehta-Boys-Telugu.jpg" alt="The-Mehta-Boys-Telugu">
-            <div class="movie-title">The Mehta Boys</div>
-            <button class="watch-btn" onclick="redirectTo('mehta.html')">Watch Now</button>
-        </div>
-        <div class="movie-card">
-            <img src="https://www.5movierulz.soy/uploads/Your-Fault-Telugu.jpg" alt="Vidudala Part 2">
-            <div class="movie-title">Your Fault</div>
-            <button class="watch-btn" onclick="redirectTo('your.html')">Watch Now</button>
-        </div>
-        <div class="movie-card">
-            <img src="https://image.tmdb.org/t/p/w500/9F4lPRLjfBjsu0zjWNOZQMa8a4V.jpg" alt="Chhaava">
-            <div class="movie-title">Chhaava</div>
-            <button class="watch-btn" onclick="redirectTo('chhaava.html')">Watch Now</button>
-        </div>
-        <div class="movie-card">
-            <img src="https://www.5movierulz.soy/uploads/Laila-Telugu.jpg" alt="laila">
-            <div class="movie-title">Laila</div>
-            <button class="watch-btn" onclick="redirectTo('laila.html')">Watch Now</button>
-        </div>
-        <div class="movie-card">
-            <img src="https://www.5movierulz.soy/uploads/Dhoom-Dhaam-Telugu-2.jpg" alt="dhoomdhaam">
-            <div class="movie-title">Dhoom Dhaam</div>
-            <button class="watch-btn" onclick="redirectTo('dhoomdhaam.html')">Watch Now</button>
-        </div>
+    <audio autoplay loop>
+        <source src="F:\web/Pressure.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <div id="overlay">TRUTH OR DARE</div>
+
+    <h1>Truth or Dare Game</h1>
+    <p>Enter the number of players:</p>
+    <input type="number" id="playerCount" min="2" placeholder="Number of players">
+    <button onclick="startGame()">Start Game</button>
+
+    <div id="number"></div>
+    <div id="choice" style="display:none;">
+        <p>Choose: Truth or Dare?</p>
+        <button onclick="choose('truth')">Truth</button>
+        <button onclick="choose('dare')">Dare</button>
     </div>
+    <div id="result"></div>
+
+    <script>
+        const truths = [
+            "What is your biggest fear?",
+            "Have you ever lied to your best friend?",
+            "What's a secret you have never told anyone?",
+            "Who was your first crush?",
+            "What’s the most embarrassing thing you've done?"
+        ];
+
+        const dares = [
+            "Do 10 jumping jacks.",
+            "Sing a song loudly.",
+            "Dance without music for 30 seconds.",
+            "Act like a monkey for 1 minute.",
+            "Call a friend and confess you love ice cream passionately."
+        ];
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.body.style.visibility = 'visible';
+            }, 500);
+        });
+
+        function startGame() {
+            const playerCount = document.getElementById('playerCount').value;
+            const num = parseInt(playerCount);
+
+            if (isNaN(num) || num < 2) {
+                alert('Please enter a valid number of players (at least 2).');
+                return;
+            }
+
+            const randomPlayer = Math.floor(Math.random() * num) + 1;
+            document.getElementById('number').innerText = `Player ${randomPlayer}, it’s your turn!`;
+            document.getElementById('choice').style.display = 'block';
+            document.getElementById('result').innerText = '';
+        }
+
+        function choose(option) {
+            let output = '';
+            if (option === 'truth') {
+                const question = truths[Math.floor(Math.random() * truths.length)];
+                output = `Your Truth question: ${question}`;
+            } else if (option === 'dare') {
+                const dare = dares[Math.floor(Math.random() * dares.length)];
+                output = `Your Dare: ${dare}`;
+            }
+            document.getElementById('result').innerText = output;
+        }
+    </script>
 </body>
 </html>
